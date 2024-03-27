@@ -1,6 +1,7 @@
 const express=require("express")
 const cors=require("cors")
 const {connection}=require("./db")
+const { userRouter } = require("./routes/user.route")
 
 
 const app=express()
@@ -10,6 +11,8 @@ app.use(cors())
 app.get("/",(req,res)=>{
     res.status(200).json({msg:"This is Home Page"})
 })
+
+app.use("/users",userRouter)
 
 app.listen(8080,async()=>{
     try {
