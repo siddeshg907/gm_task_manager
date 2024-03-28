@@ -22,14 +22,17 @@ taskRouter.post("/add",auth,async(req,res)=>{
     }
 })
 
-taskRouter.get("/",auth,async(req,res)=>{
-try {
-    const tasks=await TaskModel.find()
-    res.status(200).send(tasks)
-} catch (error) {
-    res.status(400).json({"error":error.message})
-}
-})
+taskRouter.get("/", auth, async (req, res) => {
+    const userID = req.headers.userID; // Access userID from request headers
+    
+    try {
+        
+      const tasks = await TaskModel.find(userID);
+      res.status(200).send(tasks);
+    } catch (error) {
+      res.status(400).json({ "error": error.message });
+    }
+  });
 
 taskRouter.patch("/update/:id",auth,async(req,res)=>{
     const {id}=req.params
@@ -52,12 +55,12 @@ taskRouter.delete("/delete/:id",auth,async(req,res)=>{
         const task=await TaskModel.findOne({_id:id})
         if(task.userID==req.body.userID){
             await TaskModel.findByIdAndDelete({_id:id})
-            res.status(200).json({"msg":"task updated"})
+            res.status(200).json({"msg":"task Deleted"})
         }else{
             res.status(403).json({msg:"You are not auth"})
         }
     } catch (error) {
-        res.status(500).json({"error":error.message})
+        res.status(500).json({"error":error.message+" "+"task not found"})
     }
 })
 
