@@ -1,32 +1,20 @@
 import React, { useState } from "react";
-import { Link, useHistory, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { signup } from "../Redux/Authentication/action";
 
 const Signup = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate=useNavigate()
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const loading = useSelector(state => state.loading);
+  const error = useSelector(state => state.error);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      setLoading(true);
-      const response = await axios.post('https://good-shoe-cow.cyclic.app/users/register', {
-        name,
-        email,
-        password
-      });
-      console.log(response.data); // Assuming the response contains necessary data
-      setLoading(false);
-      navigate('/login');
-    } catch (error) {
-      console.error('Error:', error);
-      setLoading(false);
-      setError(error.message);
-    }
+    dispatch(signup(name, email, password, navigate));
   };
 
   return (

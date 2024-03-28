@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { isAuthenticated } from '../utils/auth';
+import axios from 'axios';
 
 function Main() {
   const isAuth = isAuthenticated(); // You should replace this with your authentication logic
@@ -13,6 +14,10 @@ function Main() {
       navigate('/login');
     }
   };
+
+ 
+
+  
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">

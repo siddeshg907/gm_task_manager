@@ -1,27 +1,19 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../Redux/Authentication/action";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const loading = useSelector(state => state.loading);
+  const error = useSelector(state => state.error);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("https://good-shoe-cow.cyclic.app/users/login", {
-        email,
-        password,
-      });
-      console.log(response.data); // Assuming the response contains the token
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userID", response.data.userID);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
-      navigate("/");
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    dispatch(login(email, password, navigate));
   };
 
   return (
@@ -47,17 +39,19 @@ export const Login = () => {
 
         <button
           type="submit"
+          disabled={loading}
           className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
         >
-          Login
+          {loading ? "Loading..." : "Login"}
         </button>
       </form>
       <div className="flex gap-2 mt-5">
-        <p>Dont have an account?</p>
+        <p>Don't have an account?</p>
         <Link to={"/sign-up"}>
           <span className="text-blue-700">Sign up</span>
         </Link>
       </div>
+      {error && <p className="text-red-500 mt-5">{error}</p>}
     </div>
   );
 };
