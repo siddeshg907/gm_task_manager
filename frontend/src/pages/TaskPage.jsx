@@ -8,8 +8,6 @@ import { addTask, deleteTask, fetchTasks, updateTask } from '../Redux/Tasks/acti
 const TaskPage = () => {
 const dispatch = useDispatch();
 const tasks = useSelector(state => state.tasks.tasks);
-const loading = useSelector(state => state.tasks.loading);
-const error = useSelector(state => state.tasks.error);
 const userID = localStorage.getItem('userID');
 const token = localStorage.getItem('token');
 const [newTask, setNewTask] = useState({
@@ -25,7 +23,7 @@ useEffect(() => {
   dispatch(fetchTasks(token, userID))
 }, [dispatch, token, userID]);
 
-console.log(tasks)
+
 
 const handleChange = (e) => {
   setNewTask({ ...newTask, [e.target.name]: e.target.value });
@@ -57,11 +55,11 @@ const handleDeleteTask = (taskId) => {
       <div className="flex flex-col justify-center items-center">
         <div className="w-full max-w-2xl p-4">
           <div className="flex justify-center">
-            <h1 className="text-3xl font-semibold">Tasks</h1>
+            <h1 className="text-3xl font-bold text-grey-500">Tasks</h1>
           </div>
           <hr className="mt-2 mb-6 border-gray-300" />
           <button
-            className="font-bold text-blue-500 w-full py-2 mb-6 border-2 border-gray-400 rounded-md shadow-md hover:bg-gray-100 focus:outline-none"
+            className="font-bold text-teal-500 w-full py-2 mb-6 border-2 border-gray-400 rounded-md shadow-md hover:bg-gray-100 focus:outline-none"
             onClick={() => setShowForm(!showForm)}
           >
             Add a new task
@@ -85,7 +83,7 @@ const handleDeleteTask = (taskId) => {
               />
               <div className="flex items-center">
                 <div className="w-1/3">
-                  <label htmlFor="priority" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="priority" className="block text-sm font-semibold text-gray-700">
                     Priority
                   </label>
                   <select
@@ -102,7 +100,7 @@ const handleDeleteTask = (taskId) => {
                 </div>
                 <div className="ml-4">
                   <button
-                    className="w-full py-2 px-4 border-2 border-gray-400 rounded-md shadow-md hover:bg-gray-100 focus:outline-none"
+                    className="w-full py-2 px-4 border-2 border-gray-400 bg-gray-800 text-white rounded-md shadow-md hover:bg-gray-100 focus:outline-none"
                     onClick={handleAddTask}
                   >
                     Add task
@@ -116,7 +114,7 @@ const handleDeleteTask = (taskId) => {
               <div key={task._id} className="w-full md:w-1/2 lg:w-1/3 px-3 mb-6">
                 <div className="bg-white rounded-lg shadow-md p-4 h-full flex flex-col justify-between">
                   <div>
-                    <h2 className="text-xl font-semibold text-gray-800">{task.title}</h2>
+                    <h2 className="text-xl font-bold text-blue-500">{task.title}</h2>
                     <p className="text-gray-600 overflow-hidden overflow-ellipsis" style={{ maxHeight: '3.6em' }}>{task.description}</p>
                   </div>
                   <div className="ml-auto">
@@ -128,7 +126,7 @@ const handleDeleteTask = (taskId) => {
                   </div>
                   <div>
                     <div className="flex items-center mt-4">
-                      <p className="text-gray-600">Priority:</p>
+                      <p className="text-gray-600 font-bold">Priority:</p>
                       <span className={`text-xs text-white px-2 py-1 rounded-full ml-2 ${priorityColors[task.priority]}`}>
                         {task.priority}
                       </span>

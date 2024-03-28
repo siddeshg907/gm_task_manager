@@ -33,7 +33,7 @@ export const login = (email, password, navigate) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       dispatch({ type: 'LOGIN_SUCCESS' });
       console.log(response.data); // Assuming the response contains necessary data
-      navigate('/tasks');
+      if(response.data.token===undefined){alert("Wrong Credentials")}else{navigate('/')};
     } catch (error) {
       dispatch({ type: 'LOGIN_FAILURE', payload: error.message });
       console.error('Error:', error);

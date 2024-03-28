@@ -1,5 +1,24 @@
 import axios from 'axios';
 
+// export const fetchTasks = (token, userID) => {
+//   return async (dispatch) => {
+//     dispatch({ type: 'FETCH_TASKS_REQUEST' });
+//     try {
+//       const response = await axios.get("https://good-shoe-cow.cyclic.app/tasks", {
+//         headers: {
+//           Authorization: token,
+//           userID: userID,
+//         },
+//       });
+//       const tasks = response.data.filter(task => task.userID === userID);
+//       dispatch({ type: 'FETCH_TASKS_SUCCESS', payload: tasks });
+//     } catch (error) {
+//       dispatch({ type: 'FETCH_TASKS_FAILURE', payload: error.message });
+//       console.error("Error fetching tasks:", error);
+//     }
+//   };
+// };
+
 export const fetchTasks = (token, userID) => {
   return async (dispatch) => {
     dispatch({ type: 'FETCH_TASKS_REQUEST' });
@@ -10,14 +29,29 @@ export const fetchTasks = (token, userID) => {
           userID: userID,
         },
       });
-      const tasks = response.data.filter(task => task.userID === userID);
-      dispatch({ type: 'FETCH_TASKS_SUCCESS', payload: tasks });
+
+      // Filter tasks based on userID
+      const filteredTasks = response.data.filter(task => task.userID === userID);
+
+      // Sort tasks: incomplete tasks first, then completed tasks
+      filteredTasks.sort((a, b) => {
+        if (a.status === 'completed' && b.status !== 'completed') {
+          return 1; // 'a' comes after 'b'
+        } else if (a.status !== 'completed' && b.status === 'completed') {
+          return -1; // 'a' comes before 'b'
+        } else {
+          return 0; // No change in order
+        }
+      });
+
+      dispatch({ type: 'FETCH_TASKS_SUCCESS', payload: filteredTasks });
     } catch (error) {
       dispatch({ type: 'FETCH_TASKS_FAILURE', payload: error.message });
       console.error("Error fetching tasks:", error);
     }
   };
 };
+
 
 export const addTask = (newTask, token, userID) => {
   return async (dispatch) => {
@@ -52,6 +86,7 @@ export const updateTask = (task, token, userID) => {
         },
       });
       dispatch({ type: 'UPDATE_TASK_SUCCESS', payload: updatedTask });
+      dispatch(fetchTasks(token, userID))
     } catch (error) {
       console.error(error.message);
     }
