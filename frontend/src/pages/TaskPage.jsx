@@ -15,53 +15,58 @@ const TaskPage = () => {
   const [showForm, setShowForm] = useState(false);
   const token = localStorage.getItem('token');
   const userID = localStorage.getItem("userID");
-console.log(token)
-const handleAddTask = async (e) => {
-    
-  try {
-    const response = await axios.post('http://localhost:8080/tasks/add', {
-      ...newTask,
-    }, {
-      headers: {
-        Authorization: token,
-        userID:userID
-      },
-    });
-    setTasks((prev) => [...prev, response.data]);
-    setNewTask({
-      title: '',
-      description: '',
-      status: 'not completed',
-      priority: 'medium',
-      userID:userID
-    });
-  } catch (error) {
-    console.error(error.message);
-  }
-};
-
+  const fetchData = async () => {
+    try {
+      
+      const response = await axios.get("https://good-shoe-cow.cyclic.app/tasks", {
+        headers: {
+          Authorization: token,
+          userID:userID, // Include userID in request headers
+        },
+      });
+      const tasks = response.data.filter(task => task.userID === localStorage.getItem("userID"));
+      // Handle tasks data
+      console.log(tasks)
+      setTasks(tasks);
+      
+      
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+console.log(userID)
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        
-        const response = await axios.get("http://localhost:8080/tasks", {
-          headers: {
-            Authorization: token,
-            userID:userID, // Include userID in request headers
-          },
-        });
-        const tasks = response.data;
-        // Handle tasks data
-        setTasks(tasks);
-        console.log(response.data)
-        console.log(userID)
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
+    
     fetchData();
     
-  }, [token,userID,handleAddTask]);
+  }, [token,userID]);
+  
+  const handleAddTask = async (e) => {
+    try {
+      const response = await axios.post('https://good-shoe-cow.cyclic.app/tasks/add', {
+        ...newTask,
+      }, {
+        headers: {
+          Authorization: token,
+          userID: userID
+        },
+      });
+      // Add the new task to the state
+      setTasks((prev) => [...prev, response.data]);
+      // Clear the input fields for adding a new task
+      setNewTask({
+        title: '',
+        description: '',
+        status: 'not completed',
+        priority: 'medium',
+        userID: userID
+      });
+      // Fetch the updated list of tasks to reflect the new task
+      fetchData();
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
   
 
   const handleChange = (e) => {
@@ -74,7 +79,7 @@ const handleAddTask = async (e) => {
       status: task.status === 'completed' ? 'not completed' : 'completed',
     };
     try {
-      await axios.patch(`http://localhost:8080/tasks/update/${task._id}`, updatedTask, {
+      await axios.patch(`https://good-shoe-cow.cyclic.app/tasks/update/${task._id}`, updatedTask, {
         headers: {
           Authorization:token,
           userID:userID
@@ -88,7 +93,7 @@ const handleAddTask = async (e) => {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:8080/tasks/delete/${taskId}`, {
+      await axios.delete(`https://good-shoe-cow.cyclic.app/tasks/delete/${taskId}`, {
         headers: {
           Authorization:token,
           userID:userID

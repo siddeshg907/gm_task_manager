@@ -14,7 +14,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:8080/users/register', {
+      const response = await axios.post('https://good-shoe-cow.cyclic.app/users/register', {
         name,
         email,
         password

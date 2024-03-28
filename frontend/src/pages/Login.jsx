@@ -10,7 +10,7 @@ export const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/users/login", {
+      const response = await axios.post("https://good-shoe-cow.cyclic.app/users/login", {
         email,
         password,
       });
